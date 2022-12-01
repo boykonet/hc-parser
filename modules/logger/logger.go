@@ -30,3 +30,9 @@ func (l *zlog) Error(msg string, fields ...zapcore.Field) {
 func (l *zlog) Fatal(msg string, fields ...zapcore.Field) {
 	l.log.Fatal(msg, fields...)
 }
+
+func (l *zlog) With(fields ...zapcore.Field) ILogger {
+	return &zlog{
+		log: l.log.With(fields...),
+	}
+}

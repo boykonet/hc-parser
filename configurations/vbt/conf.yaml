@@ -1,0 +1,6 @@
+domain: "https://vbtverhuurmakelaars.nl"
+domain_ssl_port: "vbtverhuurmakelaars.nl:443"
+cursor: "/en/woningen"
+cookie:
+    december: "language=en; _ga_K3TX4YS4NW=GS1.1.1668723957.116.1.1668724331.0.0.0; _ga=GA1.2.1089959574.1666434304; _fbp=fb.1.1666434304100.1090678399; cookie-consent=%7B%22functional%22:true,%22analytics%22:true,%22marketing%22:true%7D; filter_properties=%7B%22city%22:%22Amsterdam%22,%22radius%22:10,%22address%22:%22%22,%22priceRental%22:%7B%22min%22:0,%22max%22:0%7D,%22availablefrom%22:%222022-12-01T00:00:00.000Z%22,%22surface%22:%22%22,%22rooms%22:0,%22typeCategory%22:%22%22%7D; _gid=GA1.2.173303371.1668344623"
+    january:  "language=en; _ga_K3TX4YS4NW=GS1.1.1669287674.151.1.1669289646.0.0.0; _ga=GA1.2.1089959574.1666434304; _fbp=fb.1.1666434304100.1090678399; cookie-consent=%7B%22functional%22:true,%22analytics%22:true,%22marketing%22:true%7D; filter_properties=%7B%22city%22:%22Amsterdam%22,%22radius%22:10,%22address%22:%22%22,%22priceRental%22:%7B%22min%22:0,%22max%22:0%7D,%22availablefrom%22:%222023-01-01T00:00:00.000Z%22,%22surface%22:%22%22,%22rooms%22:0,%22typeCategory%22:%22%22%7D; _gid=GA1.2.675714491.1669239370"

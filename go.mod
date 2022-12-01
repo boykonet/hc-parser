@@ -7,6 +7,7 @@ require go.uber.org/zap v1.23.0
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/dgrr/http2 v0.3.5 // indirect
+	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.41.0 // indirect
@@ -19,6 +20,8 @@ require (
 )
 
 require (
+	github.com/antchfx/htmlquery v1.2.5
+	github.com/antchfx/xpath v1.2.1
 	github.com/hajimehoshi/go-mp3 v0.3.4
 	github.com/hajimehoshi/oto v1.0.1
 	go.uber.org/atomic v1.7.0 // indirect

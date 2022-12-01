@@ -1,5 +1,5 @@
 package html_parser
 
 type IHTMLParser interface {
-	ParseFlats(cursor *string) []string
+	ParseFlats(file []byte, cursor *string) ([]string, error)
 }
