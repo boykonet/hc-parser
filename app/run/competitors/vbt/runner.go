@@ -3,7 +3,7 @@ package vbt
 import (
 	"sync"
 
-	"vbtor/app/conf/vbt"
+	confVBT "vbtor/app/conf/vbt"
 	"vbtor/modules/html_parser"
 	httpRequester "vbtor/modules/http_requester"
 	"vbtor/modules/logger"
@@ -14,17 +14,11 @@ import (
 	"go.uber.org/zap"
 )
 
-type Run func()
-
-const (
-	vbtURL    = "https://vbtverhuurmakelaars.nl"
-	vbtSSLURI = "vbtverhuurmakelaars.nl:443"
-	vbtCursor = "/en/woningen"
-)
-
 type runner struct {
 	wg    *sync.WaitGroup
 	mutex *sync.Mutex
+
+	conf confVBT.Configuration
 
 	flats map[string]struct{}
 
@@ -36,15 +30,15 @@ type runner struct {
 }
 
 func NewRunner(
-	conf vbt.Configuration,
+	conf confVBT.Configuration,
 	logger logger.ILogger,
 ) competitors.ICompetitorRunner {
 	requests := make(map[string]httpRequester.IHTTPRequester, 2)
 
-	rDecember := httpRequester.NewHTTPRequester(vbtSSLURI)
+	rDecember := httpRequester.NewHTTPRequester(conf.Site + ":" + "443")
 	rDecember.SetCookie(conf.Cookie.December)
 
-	rJanuary := httpRequester.NewHTTPRequester(vbtSSLURI)
+	rJanuary := httpRequester.NewHTTPRequester(conf.Site + ":" + "443")
 	rJanuary.SetCookie(conf.Cookie.January)
 
 	requests["DECEMBER"] = rDecember
@@ -53,6 +47,8 @@ func NewRunner(
 	return &runner{
 		wg:    &sync.WaitGroup{},
 		mutex: &sync.Mutex{},
+
+		conf: conf,
 
 		flats: make(map[string]struct{}, 0),
 
@@ -70,20 +66,20 @@ func (r *runner) handler(
 	countAllFlatsChan chan int,
 	month string,
 ) {
-	currentCursor := vbtCursor
+	currentCursor := r.conf.Cursor
 	countAllFlats := 0
 
 	httpRequester.ConfigureHTTP2Client()
 
 	var newFlats []string
 	for currentCursor != "" {
-		httpRequester.SetRequestURI(vbtURL + currentCursor)
+		httpRequester.SetRequestURI(r.conf.Domain + currentCursor)
 
 		if err := httpRequester.Do(); err != nil {
 			r.logger.Error(
 				"unexpected error while doing request",
 				zap.Error(err),
-				zap.String("url", vbtURL+currentCursor),
+				zap.String("url", r.conf.Domain + currentCursor),
 			)
 			break
 		}
@@ -102,7 +98,7 @@ func (r *runner) handler(
 				r.flats[flat] = struct{}{}
 				r.mutex.Unlock()
 
-				newFlats = append(newFlats, vbtURL+flat)
+				newFlats = append(newFlats, r.conf.Domain+flat)
 			}
 		}
 	}
@@ -146,4 +142,12 @@ func (r *runner) Run(f competitors.CompetitorFunc) {
 	r.wg.Wait()
 
 	f("VB&T", flats, countAllFlats, r.logger)
+}
+
+func (r *runner) SetFlatsFromFile() error {
+	return competitors.GetFromFile(r.conf.PropertiesPath, r.flats)
+}
+
+func (r *runner) SaveToFile() error {
+	return competitors.SaveToFile(r.conf.PropertiesPath, r.flats)
 }

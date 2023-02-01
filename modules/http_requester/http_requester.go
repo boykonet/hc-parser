@@ -3,8 +3,8 @@ package http_requester
 import (
 	"fmt"
 
-	"github.com/valyala/fasthttp"
 	"github.com/dgrr/http2"
+	"github.com/valyala/fasthttp"
 )
 
 type requester struct {

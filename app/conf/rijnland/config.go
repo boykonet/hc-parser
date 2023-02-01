@@ -1,7 +1,8 @@
-package vbt
+package rijnland
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 
@@ -12,11 +13,11 @@ type Configuration struct {
 	Domain			string `yaml: domain`
 	Site			string `yaml: site`
 	Cursor			string `yaml: cursor`
-	Cookie struct {
-		December string `yaml: december`
-		January  string `yaml: january`
-	} `yaml: cookie`
-	PropertiesPath string `yaml: propertiespath`
+	Host			string `yaml: host`
+	Connection		string `yaml: connection`
+	UserAgent		string `yaml: useragent`
+	Cookie			string `yaml: cookie`
+	PropertiesPath	string `yaml: propertiespath`
 }
 
 func ParseConfiguration(pathToFile string) (*Configuration, error) {
@@ -34,7 +35,7 @@ func ParseConfiguration(pathToFile string) (*Configuration, error) {
 	}
 
 	if err = yaml.Unmarshal(buff.Bytes(), conf); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%v - %v", err, string(buff.Bytes()))
 	}
 	return conf, nil
 }

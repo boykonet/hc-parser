@@ -4,22 +4,17 @@ import (
 	"fmt"
 	"sync"
 
-	fundaConf "vbtor/app/conf/funda"
-	vbtConf "vbtor/app/conf/vbt"
 	"vbtor/app/run/competitors"
-	"vbtor/app/run/competitors/funda"
-	"vbtor/app/run/competitors/vbt"
 	"vbtor/app/utils"
 
 	"vbtor/modules/logger"
 	"vbtor/modules/printer"
-
-	"go.uber.org/zap"
 )
 
 const (
-	vbtCompetitor = "VB&T"
-	fundaCompetitor = "FUNDA"
+	vbtPreview = "VB&T"
+	fundaPreview = "FUNDA"
+	rijnlandPreview = "RIJNLAND"
 )
 
 type runner struct {
@@ -32,14 +27,16 @@ type runner struct {
 }
 
 func NewRunner(
-	vconf vbtConf.Configuration,
-	fconf fundaConf.Configuration,
+	vbt competitors.ICompetitorRunner,
+	funda competitors.ICompetitorRunner,
+	rijnland competitors.ICompetitorRunner,
 	logger logger.ILogger,
 ) IRunner {
 	return &runner{
 		competitors: map[string]competitors.ICompetitorRunner{
-			vbtCompetitor: vbt.NewRunner(vconf, logger.With(zap.String("competitor", vbtCompetitor))),
-			fundaCompetitor: funda.NewRunner(fconf, logger.With(zap.String("competitor", fundaCompetitor))),
+			vbtPreview: vbt,
+			fundaPreview: funda,
+			// rijnlandPreview: rijnland,
 		},
 
 		print: printer.NewPrinter(),

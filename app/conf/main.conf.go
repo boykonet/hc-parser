@@ -10,11 +10,11 @@ import (
 )
 
 type Configuration struct {
-	Min	int	`yaml: min`
-	Max	int	`yaml: max`
+	Min int `yaml: min`
+	Max int `yaml: max`
 }
 
-func ParceConfiguration(pathToFile string) (*Configuration, error) {
+func ParseConfiguration(pathToFile string) (*Configuration, error) {
 	file, err := os.Open(pathToFile)
 	if err != nil {
 		return nil, err

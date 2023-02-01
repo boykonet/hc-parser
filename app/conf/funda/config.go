@@ -10,10 +10,15 @@ import (
 )
 
 type Configuration struct {
-	Cookie string `yaml: cookie`
+	Domain			string `yaml: domain`
+	Site			string `yaml: site`
+	Cursor			string `yaml: cursor`
+	Host			string `yaml: host`
+	Cookie			string `yaml: cookie`
+	PropertiesPath	string `yaml: propertiespath`
 }
 
-func ParceConfiguration(pathToFile string) (*Configuration, error) {
+func ParseConfiguration(pathToFile string) (*Configuration, error) {
 	file, err := os.Open(pathToFile)
 	if err != nil {
 		return nil, err

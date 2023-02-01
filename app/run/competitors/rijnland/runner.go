@@ -1,27 +1,19 @@
-package funda
+package rijnland
 
 import (
-	confFunda "vbtor/app/conf/funda"
+	"net/http"
+	confRijnland "vbtor/app/conf/rijnland"
 	"vbtor/app/run/competitors"
-
-	"vbtor/modules/html_parser"
 	httpRequester "vbtor/modules/http_requester"
+	hhhtr1 "vbtor/modules/http_requester/1"
 	"vbtor/modules/logger"
 	"vbtor/modules/printer"
 
 	"go.uber.org/zap"
 )
 
-const (
-	connection = "keep-alive"
-	userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:106.0) Gecko/20100101 Firefox/106.0"
-
-	requestMonth = "ALL"
-	pathToMusic = "./music/vbt_notification.mp3"
-)
-
 type runner struct {
-	conf		confFunda.Configuration
+	conf		confRijnland.Configuration
 
 	flats		map[string]struct{}
 
@@ -32,19 +24,18 @@ type runner struct {
 }
 
 func NewRunner(
-	conf confFunda.Configuration,
+	conf confRijnland.Configuration,
 	logger logger.ILogger,
 ) competitors.ICompetitorRunner {
-	request := httpRequester.NewHTTPRequester(conf.Site + ":" + "443")
+	request := hhhtr1.NewHTTP1Requester(http.MethodPost, conf.Domain + conf.Cursor, nil)
 	request.SetHeaders(
 		map[string]string{
 			"Host": conf.Host,
-			"Connection": connection,
-			"User-Agent": userAgent,
-			"Cookie": conf.Cookie,
+			"Connection": conf.Connection,
+			"User-Agent": conf.UserAgent,
+			// "Cookie": conf.Cookie,
 		},
 	)
-
 	return &runner{
 		conf: conf,
 		flats: make(map[string]struct{}),
@@ -57,8 +48,6 @@ func NewRunner(
 func (r *runner) handler() ([]string, int) {
 	currentCursor := r.conf.Cursor
 	countAllFlats := 0
-
-	r.request.ConfigureHTTP2Client()
 
 	var newFlats []string
 	for currentCursor != "" {
@@ -73,24 +62,29 @@ func (r *runner) handler() ([]string, int) {
 			break
 		}
 
-		body := r.request.GetBody()
+		competitors.ToFile("rijnland", r.request.GetBody())
+		
 
-		htmlParser := html_parser.NewFundaHTMLParser()
-		flats, err := htmlParser.ParseFlats(body, &currentCursor)
-		if err != nil {
-			r.logger.Error("parce flats error", zap.Error(err))
-		}
+		// body := r.request.GetBody()
+	
 
-		countAllFlats += len(flats)
+		// htmlParser := html_parser.NewRijnlandHTMLParser()
+		// flats, err := htmlParser.ParseFlats(body, &currentCursor)
+		// if err != nil {
+		// 	r.logger.Error("parce flats error", zap.Error(err))
+		// }
 
-		for _, flat := range flats {
-			_, ok := r.flats[flat]
-			if ok == false {
-				r.flats[flat] = struct{}{}
+		// countAllFlats += len(flats)
 
-				newFlats = append(newFlats, r.conf.Domain+flat)
-			}
-		}
+		// for _, flat := range flats {
+		// 	_, ok := r.flats[flat]
+		// 	if ok == false {
+		// 		r.flats[flat] = struct{}{}
+
+		// 		newFlats = append(newFlats, r.conf.Domain+flat)
+		// 	}
+		// }
+		currentCursor = ""
 	}
 	return newFlats, countAllFlats
 }
@@ -98,7 +92,7 @@ func (r *runner) handler() ([]string, int) {
 func (r *runner) Run(f competitors.CompetitorFunc) {
 	flats, countAllFlats := r.handler()
 
-	f("FUNDA", flats, countAllFlats, r.logger)
+	f("RIJNLAND", flats, countAllFlats, r.logger)
 }
 
 func (r *runner) SetFlatsFromFile() error {
