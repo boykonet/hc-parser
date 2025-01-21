@@ -1,2 +1,3 @@
 # hc-parser
-Real estate websites scraper (from open data)
+
+A web scraper designed to extract real estate data from publicly available sources.
